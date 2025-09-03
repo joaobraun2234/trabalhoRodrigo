@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pensamentos - GraphQL</title>
+</head>
+<body>
+  <h1>Lista de Pensamentos</h1>
+  <ul id="lista-pensamentos"></ul>
+
+  <script>
+    async function buscarPensamentos() {
+      const query = `
+        query {
+          pensamentos {
+            id
+            conteudo
+            autor
+          }
+        }
+      `;
+
+      try {
+        const response = await fetch('http://localhost:4000/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query })
+        });
+
+        const result = await response.json();
+        const lista = document.getElementById('lista-pensamentos');
+
+        result.data.pensamentos.forEach(p => {
+          const li = document.createElement('li');
+          li.textContent = `"${p.conteudo}" - ${p.autor}`;
+          lista.appendChild(li);
+        });
+      } catch (error) {
+        alert('Erro ao buscar pensamentos');
+        console.error(error);
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', buscarPensamentos);
+  </script>
+</body>
+</html>
